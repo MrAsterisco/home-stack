@@ -1,0 +1,32 @@
+services:
+  hister:
+    image: ghcr.io/asciimoo/hister:latest
+    container_name: hister
+    restart: unless-stopped
+    environment:
+      - HISTER__SERVER__ADDRESS=0.0.0.0:4433
+      - HISTER__SERVER__BASE_URL=https://${DOMAIN_NAME}
+    volumes:
+      - hister_data:/hister/data
+    networks:
+      - traefik_default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_default
+      - traefik.http.routers.search.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.search.entrypoints=websecure
+      - traefik.http.routers.search.tls=true
+      - traefik.http.services.search.loadbalancer.server.port=4433
+      - homepage.group=Utilities
+      - homepage.name=Search
+      - homepage.href=https://${DOMAIN_NAME}
+      - homepage.description=Hister
+
+volumes:
+  hister_data:
+    external: true
+    name: hister_hister_data
+
+networks:
+  traefik_default:
+    external: true
