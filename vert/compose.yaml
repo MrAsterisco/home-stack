@@ -1,0 +1,30 @@
+services:
+  vert:
+    container_name: vert
+    image: ghcr.io/vert-sh/vert:latest
+    build:
+      context: .
+      args:
+        PUB_HOSTNAME: ${DOMAIN_NAME}
+        PUB_PLAUSIBLE_URL: ${PUB_PLAUSIBLE_URL:-}
+        PUB_ENV: ${PUB_ENV:-production}
+        PUB_DISABLE_ALL_EXTERNAL_REQUESTS: ${PUB_DISABLE_ALL_EXTERNAL_REQUESTS:-false}
+        PUB_VERTD_URL: ${PUB_VERTD_URL:-}
+    restart: unless-stopped
+    networks:
+      - traefik_default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_default
+      - traefik.http.routers.vert.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.vert.entrypoints=websecure
+      - traefik.http.routers.vert.tls=true
+      - homepage.group=Utilities
+      - homepage.name=Vert
+      - homepage.href=https://${DOMAIN_NAME}
+      - homepage.description=Files Converter
+
+networks:
+  traefik_default:
+    external: true
+    name: traefik_default
