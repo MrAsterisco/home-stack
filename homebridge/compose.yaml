@@ -1,0 +1,29 @@
+services:
+  homebridge:
+    image: homebridge/homebridge:latest
+    restart: unless-stopped
+    network_mode: host
+    hostname: homebridge
+    volumes:
+      - homebridge_data:/homebridge
+    environment:
+      - TZ=Europe/Rome
+      - ENABLE_AVAHI=1
+    logging:
+      driver: journald
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8581 || exit 1"]
+      interval: 60s
+      retries: 5
+      start_period: 300s
+      timeout: 2s
+    labels:
+      - homepage.group=Home
+      - homepage.name=Homebridge
+      - homepage.href=http://${DOMAIN_NAME}:8581
+      - homepage.description=Homebridge Server
+
+volumes:
+  homebridge_data:
+    external: true
+    name: homebridge_data
