@@ -13,6 +13,7 @@ services:
         condition: service_completed_successfully
 
     networks:
+      - default
       - traefik_default
 
     volumes:
@@ -95,6 +96,7 @@ volumes:
     external: true
 
 networks:
+  default: {}
   traefik_default:
     external: true
     name: traefik_default
