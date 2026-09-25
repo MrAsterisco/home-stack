@@ -12,6 +12,9 @@ services:
       affine_migration:
         condition: service_completed_successfully
 
+    networks:
+      - traefik_default
+
     volumes:
       - Affine:/root/.affine/storage
       - /var/lib/affine/config:/root/.affine/config
@@ -26,10 +29,10 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik_default
-      - traefik.http.routers.uptime.rule=Host(`${DOMAIN_NAME}`)
-      - traefik.http.routers.uptime.entrypoints=websecure
-      - traefik.http.routers.uptime.tls=true
-      - traefik.http.services.uptime.loadbalancer.server.port=3010
+      - traefik.http.routers.affine.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.affine.entrypoints=websecure
+      - traefik.http.routers.affine.tls=true
+      - traefik.http.services.affine.loadbalancer.server.port=3010
       - homepage.group=Utilities
       - homepage.name=Affine
       - homepage.href=https://${DOMAIN_NAME}
@@ -90,3 +93,8 @@ services:
 volumes:
   Affine:
     external: true
+
+networks:
+  traefik_default:
+    external: true
+    name: traefik_default
