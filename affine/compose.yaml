@@ -23,6 +23,18 @@ services:
 
     restart: unless-stopped
 
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_default
+      - traefik.http.routers.uptime.rule=Host(`${DOMAIN_NAME}`)
+      - traefik.http.routers.uptime.entrypoints=websecure
+      - traefik.http.routers.uptime.tls=true
+      - traefik.http.services.uptime.loadbalancer.server.port=3010
+      - homepage.group=Utilities
+      - homepage.name=Affine
+      - homepage.href=https://${DOMAIN_NAME}
+      - homepage.description=Knowledge Base
+
   affine_migration:
     image: ghcr.io/toeverything/affine:stable
     container_name: affine_migration_job
